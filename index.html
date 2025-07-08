@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Corações Binários</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: black;
+      color: white;
+      font-family: 'Arial', sans-serif;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    #botao {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #ff0066;
+      color: white;
+      border: none;
+      font-size: 30px;
+      padding: 15px 30px;
+      border-radius: 10px;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    #coraçao {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 100px;
+      color: red;
+      display: none;
+      z-index: 2;
+      cursor: pointer;
+    }
+
+    #data {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 24px;
+      z-index: 2;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<button id="botao">Aperte</button>
+<div id="coraçao">❤️</div>
+<div id="data"></div>
+
+<script>
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+
+  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+
+  const letters = Array(100).fill("❤️");
+  const fontSize = 20;
+  const columns = canvas.width / fontSize;
+  const drops = Array(Math.floor(columns)).fill(1);
+
+  function draw() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#ff69b4";
+    ctx.font = fontSize + "px Arial";
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = letters[Math.floor(Math.random() * letters.length)];
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+
+      drops[i]++;
+    }
+  }
+
+  setInterval(draw, 33);
+
+  const botao = document.getElementById("botao");
+  const cora = document.getElementById("coraçao");
+  const dataDiv = document.getElementById("data");
+
+  let cliqueCount = 0;
+
+  botao.onclick = () => {
+    botao.style.display = "none";
+    cora.style.display = "block";
+    dataDiv.style.display = "block";
+    mostrarData();
+  };
+
+  cora.onclick = () => {
+    cliqueCount++;
+    mostrarData();
+    cora.style.transform = `translate(-50%, -50%) scale(${1 + cliqueCount * 0.1})`;
+  };
+
+  function mostrarData() {
+    dataDiv.textContent = `${cliqueCount + 1}x: 1 Ano 6 Meses e 7 Dias 💖`;
+  }
+
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+</script>
+
+</body>
+</html>
